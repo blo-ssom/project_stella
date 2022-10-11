@@ -1,14 +1,14 @@
 const express = require("express");
 const app = express();
-const port = 8080;
+const port = 3030;
 const mysql = require('mysql');
 
 
     var conn = mysql.createConnection({
         host : 'localhost',
         user : 'root',
-        password : '1234',
-        database : 'gameserver'
+        password : '0828',
+        database : 'player'
     });
 
     conn.connect((err) =>
@@ -64,7 +64,7 @@ conn.end();
 //                 if(results[0] === undefined){
 //                     res.json({
 //                         cmd : 1101,
-//                         errorno : 9001
+//                         errorno : 9001   
 //                     });
 //                 }
 //                 else{
