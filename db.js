@@ -3,7 +3,7 @@ let db_info = {
     host : 'localhost',
     user : 'root',
     password : '0828',
-    database : 'player'
+    database : 'stella'
 }
 
 module.exports = {

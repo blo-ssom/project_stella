@@ -11,7 +11,7 @@ const mysql = require('mysql');
         database : 'player'
     });
 
-    conn.connect((err) =>
+    connection.connect((err) =>
     {
         if(err){
             console.log(err);
@@ -30,7 +30,7 @@ conn.query('SELECT * FROM player', (error, rows, fields) => {
     if (error) throw error;
     console.log('User info is : ', rows);
 });
-app.get('/register_user', (req, res) => {
+app.get('/', (req, res) => {
     var user_id = req.body.id;
     var user_pw = req.body.pw;
     res.send('hello');
