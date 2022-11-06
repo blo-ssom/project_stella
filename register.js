@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 var conn = mysql.createConnection({
     host : 'localhost',
     user : 'root',
-    password : '0828',
+    password : '1234',
     database : 'stella'
 });
 
@@ -53,21 +53,29 @@ conn.connect(function(err){
   });
 
   app.post("/show_user",function(req,res){
-    var user_id = req.body.userid;
-    var sql = 'SELECT * from player WHERE userId = ?';
-    var param = user_id;
-    conn.query(sql, user_id, function(err, rows, fields) {
-      if (err)
-      {
-        res.send("error");
-        console.log("error is:"+err);
-        console.log('Error while performing Query.');
-      }
-      else
-      {
-        res.send(rows[0]);
-      }
-    });
+    var user_id = req.body.ID;
+    var user_pw = req.body.PW;
+    if(user_id && user_pw){
+      conn.query('SELECT * FROM player WHERE userID = ? AND userPW = ?', [user_id, user_pw], function(err, rows, fields) {
+        if (err)
+        {
+          res.send("error");
+          console.log("error is:"+err);
+          console.log('Error while performing Query.');
+        }
+        else if(rows.length>0)
+        {
+          console.log("보냄");
+          res.send(rows[0]);
+          // console.log(rows[user_no-1]);
+          // res.send(rows[user_no-1]);
+        }
+      });
+    }
+    // console.log(user_no);
+    // var sql = 'SELECT * from player WHERE ' + user_no;
+    // console.log(sql);
+
   });
   app.listen(3030, function(){
     console.log('Connected 3030 port!');
