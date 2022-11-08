@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 var conn = mysql.createConnection({
     host : 'localhost',
     user : 'root',
-    password : '1234',
+    password : '0828',
     database : 'stella'
 });
 
@@ -45,30 +45,31 @@ conn.connect(function(err){
       else
       {
         var result_json = {};
-        // result_json["url"] = req.originalUrl;
-        // result_json["userId"] = rows.insertId;
+        result_json["url"] = req.originalUrl;
+        result_json["userId"] = rows.insertId;
         res.json(result_json);
       }
     });
   });
 
-  app.post("/show_user",function(req,res){
+  app.post("/login_user",function(req,res){
     var user_id = req.body.ID;
     var user_pw = req.body.PW;
     if(user_id && user_pw){
       conn.query('SELECT * FROM player WHERE userID = ? AND userPW = ?', [user_id, user_pw], function(err, rows, fields) {
         if (err)
         {
+          
           res.send("error");
           console.log("error is:"+err);
           console.log('Error while performing Query.');
         }
         else if(rows.length>0)
         {
+
+          console.log(rows[0]);
           console.log("보냄");
           res.send(rows[0]);
-          // console.log(rows[user_no-1]);
-          // res.send(rows[user_no-1]);
         }
       });
     }
