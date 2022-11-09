@@ -24,7 +24,7 @@ conn.connect(function(err){
     }
   });
 
-
+//-------------------------------------------------------회원가입
   app.post("/make_user",function(req,res){
     var userno;
     var user_id = req.body.ID;
@@ -51,7 +51,7 @@ conn.connect(function(err){
       }
     });
   });
-
+//-------------------------------------------------------로그인
   app.post("/login_user",function(req,res){
     var user_id = req.body.ID;
     var user_pw = req.body.PW;
@@ -78,6 +78,15 @@ conn.connect(function(err){
     // console.log(sql);
 
   });
+  //-------------------------------------------------------골드
+  app.post("/gold_send",function(req,res){
+    var user_no = req.body.userno;
+    var user_gold = req.body.GOLD;
+    console.log(user_gold); 
+    console.log(user_no); 
+  });
+
+
   app.listen(3030, function(){
     console.log('Connected 3030 port!');
   });
