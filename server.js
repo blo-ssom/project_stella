@@ -56,7 +56,7 @@ conn.connect(function(err){
     var user_id = req.body.ID;
     var user_pw = req.body.PW;
     if(user_id && user_pw){
-      conn.query('SELECT * FROM player WHERE userID = ? AND userPW = ?', [user_id, user_pw], function(err, rows, fields) {
+      conn.query('SELECT * FROM player WHERE BINARY(userID) = ? AND BINARY(userPW) = ?', [user_id, user_pw], function(err, rows, fields) {
         if (err)
         {
           
@@ -80,12 +80,27 @@ conn.connect(function(err){
   });
   //-------------------------------------------------------골드
   app.post("/gold_send",function(req,res){
-    var user_no = req.body.userno;
-    var user_gold = req.body.GOLD;
-    console.log(user_gold); 
-    console.log(user_no); 
-  });
+    var gold = req.body.GoldSend;
+    var userno = req.body.userno;
+    console.log(gold);
+    console.log(userno);
+    conn.query('UPDATE property SET gold = ? WHERE userno = ?', [gold, userno], function(err, rows, fields) {
+      if(err){
+        res.send("error");
+      }
+      else{
+        console.log(rows);
+        console.log("보냄");
+        res.send(rows);
+      }
+    })
+    console.log(gold);
 
+  });
+//---------------------------------------------------------
+  app.get("/stamina_user", function(req, res){
+    print(req, res);
+  });
 
   app.listen(3030, function(){
     console.log('Connected 3030 port!');
