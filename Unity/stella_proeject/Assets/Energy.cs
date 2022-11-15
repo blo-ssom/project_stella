@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using UnityEngine.Networking;
 
 public class Energy : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class Energy : MonoBehaviour
 
     private IEnumerator RestoreEnergy()
     {
+        
         UpdateEnergyTimer();
         isRestoring = true;
         while(currentEnergy < maxEnergy)
@@ -121,6 +123,7 @@ public class Energy : MonoBehaviour
     {
         PlayerPrefs.SetInt("currentEnergy", currentEnergy);
         PlayerPrefs.SetString("nextEnergyTime", nextEnergyTime.ToString());
+        print(nextEnergyTime);
         PlayerPrefs.SetString("lastEnergyTime", lastEnergyTime.ToString());
     }
 

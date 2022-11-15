@@ -6,11 +6,15 @@ using UnityEngine.Networking;
 
 public class Register : MonoBehaviour
 {
+    public Canvas[] panel;
     public InputField inputID;
     public InputField inputPW;
     public InputField InputName;
     public Button regbtn;
-    public Text infoText;
+    Text infoText;
+    public Text[] Myinfotext;
+    public string[] userData;
+    private int gold = 0;
 
     public class PacketData
     {
@@ -30,32 +34,23 @@ public class Register : MonoBehaviour
     {
         StartCoroutine(ServerLoginUser());
     }
-    IEnumerator ServerShowUser()
+
+    public void registerBtn()
     {
-        WWWForm form = new WWWForm();
-        form.AddField("userno", inputID.text);
-        UnityWebRequest www = UnityWebRequest.Post("http://localhost:3030/show_user", form);
-        
-        yield return www.Send();
-        www.uploadHandler.Dispose();
-        if (www.isNetworkError)
-        {
-            Debug.Log(www.error);
-        }
-        else
-        {
-            Debug.Log(www.downloadHandler.text);
-            UserData data = JsonUtility.FromJson<UserData>(www.downloadHandler.text);
-            Debug.Log("ID :" + data.userid + ", PASSWORD :" + data.userpw + ",Name :" + data.username);
-            //infoText.text = "ID:" + data.userid + "\\PASSWORD:" + data.userpw + "\\Name:" + data.username;
-        }
+        StartCoroutine(ServerMakeUser());
     }
+    public void goldSend()
+    {
+
+        StartCoroutine(GoldSend());
+    }
+
     IEnumerator ServerLoginUser()
     {
         WWWForm form = new WWWForm();
         form.AddField("ID", inputID.text);
         form.AddField("PW", inputPW.text);
-        UnityWebRequest www = UnityWebRequest.Post("http://localhost:3030/show_user", form);
+        UnityWebRequest www = UnityWebRequest.Post("http://localhost:3030/login_user", form);
 
         yield return www.Send();
         if (www.isNetworkError)
@@ -66,9 +61,25 @@ public class Register : MonoBehaviour
         {
             Debug.Log("Login Success");
             print(www.downloadHandler.text);
-            UserData data = JsonUtility.FromJson<UserData>(www.downloadHandler.text);
-            Debug.Log("ID :" + data.userid + ", PASSWORD :" + data.userpw + ",Name :" + data.username);
-            //infoText.text = "ID:" + data.userid + "\\PASSWORD:" + data.userpw + "\\Name:" + data.username;
+
+            string data = www.downloadHandler.text.Replace("{", "");
+            data = data.Replace("}", "");
+            data = data.Replace("\"", "");
+
+            string[] val = data.Split(",");
+            string[] val2;
+            
+            // 기준문자열.Replace("변경전값", "변경후값")
+            for (int i = 0; i < val.Length; i++)
+            {
+                val2 = val[i].Split(":");
+                Myinfotext[i].text = Myinfotext[i].text + val2[1];
+                userData[i] = val2[1];
+                print(val2[1]);
+            }
+            panel[0].gameObject.SetActive(false);
+            panel[1].gameObject.SetActive(true);
+            www.Dispose();
         }
 
     }
@@ -90,16 +101,33 @@ public class Register : MonoBehaviour
         else
         {
             Debug.Log(www.downloadHandler.text);
-            PacketData data = JsonUtility.FromJson<PacketData>(www.downloadHandler.text);
-            PlayerPrefs.SetInt("userno", data.userno);
-            PlayerPrefs.Save();
+
+        }
+    }
+
+    IEnumerator GoldSend()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("GoldSend", gold += 10);
+        print(userData[0]);
+        form.AddField("userno", userData[0]);
+        UnityWebRequest www = UnityWebRequest.Post("http://localhost:3030/gold_send", form);
+
+        yield return www.Send();
+        www.uploadHandler.Dispose();
+        if (www.isNetworkError)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log(www.downloadHandler.text);
+            //Myinfotext[5].text = 
+
         }
     }
     // Start is called before the first frame update
-    public void registerBtn()
-    {
-        StartCoroutine(ServerMakeUser());
-    }
+
     void Start()
     {
         
@@ -111,6 +139,6 @@ public class Register : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 }
