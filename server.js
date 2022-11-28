@@ -1,6 +1,7 @@
 const express = require('express');
 var mysql = require('mysql');
 const bodyParser = require('body-parser');
+const e = require('express');
 
 var conn = mysql.createConnection({
     host : 'localhost',
@@ -55,28 +56,29 @@ conn.connect(function(err){
   app.post("/login_user",function(req,res){
     var user_id = req.body.ID;
     var user_pw = req.body.PW;
-    if(user_id && user_pw){
-      conn.query('SELECT * FROM player WHERE BINARY(userID) = ? AND BINARY(userPW) = ?', [user_id, user_pw], function(err, rows, fields) {
-        if (err)
-        {
-          
-          res.send("error");
-          console.log("error is:"+err);
-          console.log('Error while performing Query.');
-        }
-        else if(rows.length>0)
-        {
-
-          console.log(rows[0]);
-          console.log("보냄");
-          res.send(rows[0]);
-        }
-      });
+    if(user_id&&user_pw){
+      conn.query('SELECT userID, userPW FROM player WHERE BINARY(userID) = ?', [user_id], function(err, rows, fields) {
+          if(rows.length > 0)
+          {
+            if(user_pw ==  rows[0].userPW){
+              console.log("성공");
+              console.log(rows[0]);
+              res.send(rows[0]);
+            }
+            else{
+              console.log("비밀번호 오류");
+              res.send("102");
+            }
+          }
+          else{
+            console.log("아이디 오류");
+            res.send("101");
+          }
+          if(err){
+            res.send("error");
+          }
+        });
     }
-    // console.log(user_no);
-    // var sql = 'SELECT * from player WHERE ' + user_no;
-    // console.log(sql);
-
   });
   //-------------------------------------------------------골드
   app.post("/gold_send",function(req,res){
@@ -84,14 +86,32 @@ conn.connect(function(err){
     var userno = req.body.userno;
     console.log(gold);
     console.log(userno);
-    conn.query('UPDATE property SET gold = ? WHERE userno = ?', [gold, userno], function(err, rows, fields) {
+    conn.query('UPDATE player SET gold = ? WHERE userno = ?', [gold, userno], function(err, rows, fields) {
       if(err){
         res.send("error");
       }
-      else{
+      if(rows.length > 0){
         console.log(rows);
         console.log("보냄");
-        res.send(rows);
+        res.send(rows[0]);
+      }
+    })
+    console.log(gold);
+
+  });
+  app.post("/dia_send",function(req,res){
+    var dia = req.body.DiaSend;
+    var userno = req.body.userno;
+    console.log(gold);
+    console.log(userno);
+    conn.query('UPDATE player SET userDIa = ? WHERE userno = ?', [dia, userno], function(err, rows, fields) {
+      if(err){
+        res.send("error");
+      }
+      if(rows.length > 0){
+        console.log(rows);
+        console.log("보냄");
+        res.send(rows[0]);
       }
     })
     console.log(gold);
