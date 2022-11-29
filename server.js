@@ -53,11 +53,25 @@ conn.connect(function(err){
     });
   });
 //-------------------------------------------------------로그인
-  app.post("/login_user",function(req,res){
+app.post("/test",function(req,res) 
+                { 
+                    conn.query('select * from player;', function(err, rows, fields)  
+                    {  
+                      var person = {}; //또는 var person = new Object();
+                      person.info = rows;
+
+                      res.json(person); 
+                    }  )
+                }
+);
+  
+
+
+app.post("/login_user",function(req,res){
     var user_id = req.body.ID;
     var user_pw = req.body.PW;
     if(user_id&&user_pw){
-      conn.query('SELECT userID, userPW FROM player WHERE BINARY(userID) = ?', [user_id], function(err, rows, fields) {
+      conn.query('SELECT userno, userID, userPW, userName FROM player WHERE BINARY(userID) = ?', [user_id], function(err, rows, fields) {
           if(rows.length > 0)
           {
             if(user_pw ==  rows[0].userPW){
@@ -117,11 +131,15 @@ conn.connect(function(err){
     console.log(gold);
 
   });
+  
 //---------------------------------------------------------
   app.get("/stamina_user", function(req, res){
     print(req, res);
   });
 
-  app.listen(3030, function(){
+  app.listen(3030, function() 
+  {
     console.log('Connected 3030 port!');
   });
+  
+  
