@@ -20,6 +20,12 @@ conn.connect(function(err){
       conn.query('SELECT * FROM player',(error, rows, fields) => {
         console.log("User Info : ", rows);
       })
+      conn.query('SELECT * FROM carddata',(error, rows, fields) => {
+        console.log("card Info : ", rows);
+      })
+      conn.query('SELECT * FROM stagedata',(error, rows, fields) => {
+        console.log("stage Info : ", rows);
+      })
     } else {
       console.log("Error connecting database ... \n\n");
     }
@@ -53,30 +59,16 @@ conn.connect(function(err){
     });
   });
 //-------------------------------------------------------로그인
-app.post("/test",function(req,res) 
-                { 
-                    conn.query('select * from player;', function(err, rows, fields)  
-                    {  
-                      var person = {}; //또는 var person = new Object();
-                      person.info = rows;
-
-                      res.json(person); 
-                    }  )
-                }
-);
-  
 
 
 app.post("/login_user",function(req,res){
     var user_id = req.body.ID;
     var user_pw = req.body.PW;
     if(user_id&&user_pw){
-      conn.query('SELECT userno, userID, userPW, userName FROM player WHERE BINARY(userID) = ?', [user_id], function(err, rows, fields) {
+      conn.query('SELECT userno, userID, userPW, userName, m_nGold, m_nDiamond, m_nGas, _bFirst FROM player WHERE BINARY(userID) = ?', [user_id], function(err, rows, fields) {
           if(rows.length > 0)
           {
             if(user_pw ==  rows[0].userPW){
-              console.log("성공");
-              console.log(rows[0]);
               res.send(rows[0]);
             }
             else{
@@ -94,13 +86,43 @@ app.post("/login_user",function(req,res){
         });
     }
   });
-  //-------------------------------------------------------골드
+  //-------------------------------------------------------로그인
+  app.post("/test",function(req,res) 
+                { 
+                    conn.query('select * from player;', function(err, rows, fields)  
+                    {  
+                      var person = {}; //또는 var person = new Object();
+                      person.info = rows;
+                      res.json(person); 
+                    }  )
+                });
+
+  app.post("/GetCardData", function(req, res){
+      conn.query('SELECT * FROM carddata where userno = '+ req.body.userno, function(err, rows, fields){
+        var dara = {}; //또는 var person = new Object();
+        dara.info = rows;
+
+        console.log("GetCardData 호출 " + req.body.userno);
+
+        res.json(dara); 
+      })  
+  });
+  app.post("/GetStageData", function(req, res){
+      conn.query('SELECT * FROM stagedata where userno = '+req.body.userno, function(err, rows, fields){
+        var dara = {}; //또는 var person = new Object();
+        dara.info = rows;
+        console.log("GetStageData 호출 : " + req.body.userno);
+        console.log("GetStageData : " + rows);
+        res.json(dara); 
+      })  
+  });
+  //-------------------------------------------------------재화
   app.post("/gold_send",function(req,res){
     var gold = req.body.GoldSend;
     var userno = req.body.userno;
     console.log(gold);
     console.log(userno);
-    conn.query('UPDATE player SET gold = ? WHERE userno = ?', [gold, userno], function(err, rows, fields) {
+    conn.query('UPDATE player SET m_nGold = ? WHERE userno = ?', [gold, userno], function(err, rows, fields) {
       if(err){
         res.send("error");
       }
