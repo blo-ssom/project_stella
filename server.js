@@ -31,6 +31,7 @@ conn.connect(function(err){
     }
   });
 
+
 //-------------------------------------------------------회원가입
   app.post("/make_user",function(req,res){
     var userno;
@@ -58,8 +59,57 @@ conn.connect(function(err){
       }
     });
   });
+  
 //-------------------------------------------------------로그인
+// stageClear
+app.post("/stageClear",function(req,res) 
+                { //;
 
+                  var sql = "INSERT INTO `stella`.`stagedata` (`userno`, `m_bClear`, `m_strStage`) VALUES (?, ?, ?) ";
+                  req.body.userno
+
+                  var b = req.body;
+                  
+                    conn.query(sql,[b.userno, b.d1, b.d2], function(err, rows, fields)  
+                    {  
+                      if (err)
+      {
+        console.log(err.message);
+      }
+      else
+      {
+        console.log(" 성공");
+      }
+
+                    } )
+                });
+
+
+
+app.post("/insertCard",function(req,res) 
+                { 
+                  var sql = "INSERT INTO `stella`.`carddata` (`userno`, `m_eCardType`, `m_eCardRank`, `m_nCost`, `m_nLevel`, `m_nMaxLevel`, `m_nUnlimite`, `m_nLevelUpGold`, `m_fAp`, `m_fHp`, `_eMT`, `cardno`) ";
+                  sql += "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, cardno)";
+                  //UPDATE player SET m_nGold = ? WHERE userno = ?
+                  //INSERT INTO `stella`.`carddata` (`userno`, `m_eCardType`, `m_eCardRank`, `m_nCost`, `m_nLevel`, `m_nMaxLevel`, `m_nUnlimite`, `m_nLevelUpGold`, `m_fAp`, `m_fHp`, `_eMT`, `cardno`) 
+                  //VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                  req.body.userno
+
+                  var b = req.body;
+                  
+                    conn.query(sql,[b.userno, b.d1, b.d2, b.d3, b.d4, b.d5, b.d6, b.d7, b.d8, b.d9, b.d10], function(err, rows, fields)  
+                    {  
+                      if (err)
+      {
+        console.log(err.message);
+      }
+      else
+      {
+        console.log(" 성공");
+      }
+
+                    } )
+                });
 
 app.post("/login_user",function(req,res){
     var user_id = req.body.ID;
