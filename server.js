@@ -4,10 +4,13 @@ const bodyParser = require('body-parser');
 const e = require('express');
 
 var conn = mysql.createConnection({
-    host : 'localhost',
+  //34.63.113.6
+    host : '34.64.150.107',
+    port : '3306',
     user : 'root',
     password : '0828',
-    database : 'stella'
+    database : 'stella',
+    connectTimeout: 30000
 });
 
 var app = express();
@@ -28,6 +31,7 @@ conn.connect(function(err){
       })
     } else {
       console.log("Error connecting database ... \n\n");
+      console.log(err.message);
     }
   });
 
