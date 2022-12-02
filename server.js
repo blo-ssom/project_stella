@@ -197,7 +197,7 @@ app.post("/dia_send", function (req, res) {
 
 });
 //---------------------------------유저 업데이트
-app.post("/UpdateUserData", function (req, res) {
+app.post("/UpdateUesrData", function (req, res) {
   var b = req.body;
   conn.query('UPDATE player SET m_nGold = ?, m_nDiamond = ?, m_nGas = ?, _bFirst = 0 WHERE userno = ?', [b.gold, b.dia, b.gas, b.userno], function (err, rows, fields) {
     if(err) console.log()
