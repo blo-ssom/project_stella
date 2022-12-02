@@ -210,6 +210,7 @@ app.post("/deleteCard", function (req, res) {
   var b = req.body;
   conn.query('DELETE FROM carddata WHERE userno = ? AND cardno = ?', [b.userno, b.d1], function (err, rows, fields) {
     console.log(rows[0]);
+    res.send(rows[0]);
   })
 });
 
