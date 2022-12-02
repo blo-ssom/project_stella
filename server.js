@@ -207,6 +207,24 @@ app.post("/login_user",function(req,res){
     console.log(gold);
 
   });
+    //---------------------------------유저 업데이트
+    app.post("/UpdateUserData",function(req,res) 
+    { 
+      var b = req.body;
+        conn.query('UPDATE player SET m_nGold = ?, m_nDiamond = ?, m_nGas = ?, _bFirst = ? WHERE userno = ?', [b.gold, b.dia, b.gas, b.first, b.userno], function(err, rows, fields)  
+        {
+          console.log(rows[0]);
+        })
+    });
+  //---------------------------------카드 삭제
+    app.post("/deleteCard",function(req,res) 
+    { 
+      var b = req.body;
+        conn.query('DELETE FROM carddata WHERE userno = ? AND d1 = ?', [b.userno, b.d1], function(err, rows, fields)  
+        {
+          console.log(rows[0]);
+        })
+    });
   
 //---------------------------------------------------------
   app.get("/stamina_user", function(req, res){
