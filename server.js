@@ -85,7 +85,7 @@ app.post("/stageClear", function (req, res) { //;
 app.post("/updateCard", function (req, res) {
   console.log("안온건가");
   var b = req.body;
-  conn.query('UPDATE carddata SET m_eCardType = ?, m_eCardRank = ?, m_nCost = ?, m_nLevel = ?, m_nMaxLevel = ?, m_nUnlimite = ?, m_nLevelUpGold = ?, m_fAp = ?, m_fHp = ?, _eMT = ? WHERE userno = ?', [b.d1, b.d2, b.d3, b.d4, b.d5, b.d6, b.d7, b.d8, b.d9, b.d10, b.userno], function (err, rows, fields) {
+  conn.query('UPDATE carddata SET m_eCardType = ?, m_eCardRank = ?, m_nCost = ?, m_nLevel = ?, m_nMaxLevel = ?, m_nUnlimite = ?, m_nLevelUpGold = ?, m_fAp = ?, m_fHp = ?, _eMT = ? WHERE userno = ? AND cardno = ?', [b.d1, b.d2, b.d3, b.d4, b.d5, b.d6, b.d7, b.d8, b.d9, b.d10, b.userno, b.cardno], function (err, rows, fields) {
     console.log(rows[0]);
   })
 });
