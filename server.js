@@ -199,7 +199,7 @@ app.post("/dia_send", function (req, res) {
 //---------------------------------유저 업데이트
 app.post("/UpdateUserData", function (req, res) {
   var b = req.body;
-  conn.query('UPDATE player SET m_nGold = ?, m_nDiamond = ?, m_nGas = ?, _bFirst = ? WHERE userno = ?', [b.gold, b.dia, b.gas, b.first, b.userno], function (err, rows, fields) {
+  conn.query('UPDATE player SET m_nGold = ?, m_nDiamond = ?, m_nGas = ?, _bFirst = 0 WHERE userno = ?', [b.gold, b.dia, b.gas, b.userno], function (err, rows, fields) {
     if(err) console.log()
     console.log(rows[0]);
   })
