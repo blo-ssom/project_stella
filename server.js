@@ -153,10 +153,17 @@ app.post("/updateRaidScore", function (req, res) {
   var b = req.body;
 
   conn.query('select * from RaidScore where userno = ?;', [b.userno], function (err, rows, fields) {
-    if(rows.length > 0 ){
-      conn.query('UPDATE RaidScore SET Score = ? WHERE userno = ?', [b.score, b.userno], function (err, rows, fields) {
-        res.send("업데이트");
-      })
+    if(rows.length > 0){
+
+      if(rows[0].Score < b.score){
+        conn.query('UPDATE RaidScore SET Score = ? WHERE userno = ?', [b.score, b.userno], function (err, rows, fields) {
+          res.send("업데이트");
+        })
+      }
+      else{
+        res.send("강해저서 돌아와라");
+      }
+
     }
     else{
       conn.query('INSERT INTO RaidScore (userno, Name, Score) values(?, ?, ?)', [b.userno, b.name, b.score], function (err, rows, fields){
