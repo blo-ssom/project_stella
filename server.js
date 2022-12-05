@@ -41,25 +41,34 @@ conn.connect(function (err) {
 //-------------------------------------------------------회원가입
 app.post("/make_user", function (req, res) {
   var userno;
-  var user_id = req.body.ID;
-  var user_pw = req.body.PW;
-  var user_name = req.body.NAME;
+  var user_id = req.body.id;
+  var user_pw = req.body.pw;
+  var user_name = req.body.name;
   console.log('user_id: ', user_id);
   console.log('user_pw: ', user_pw);
   console.log('user_name: ', user_name);
 
-  conn.query('INSERT INTO player (userno, userID, userPW, userName) values(?, ?, ?, ?)', [userno, user_id, user_pw, user_name], function (err, rows, fields) {
-    if (err) {
-      res.status(500).send('Internal Server Error');
-      console.log(err);
-      console.log('Error while performing Query.');
-    } else {
-      var result_json = {};
-      result_json["url"] = req.originalUrl;
-      result_json["userId"] = rows.insertId;
-      res.json(result_json);
-    }
-  });
+  if(user_id && user_pw && user_name){
+    conn.query('SELECT userId, userName FROM player where userId = ?', [user_id], function (err, rows, fields) {
+      
+      if(rows.length > 0 ){
+        console.log("이미 존재하는 아이디 입니다.");
+        res.send("202");
+      }
+      else{
+        console.log("진행.");
+        conn.query('INSERT INTO player (userId, userPw, userName) values(?, ?, ?)', [user_id, user_pw, user_name], function (err, rows, fields){
+            res.send("1");
+        })
+          console.log("회원가입 완료");
+        
+      }
+    })
+  }else{
+    console.log("값 입력");
+  }
+
+
 });
 
 //-------------------------------------------------------로그인
@@ -139,6 +148,57 @@ app.post("/test", function (req, res) {
     res.json(person);
   })
 });
+//------------------------------------------------------------------
+app.post("/updateRaidScore", function (req, res) {
+  var b = req.body;
+
+  conn.query('select * from RaidScore where userno = ?;', [b.userno], function (err, rows, fields) {
+    if(rows.length > 0 ){
+      conn.query('UPDATE RaidScore SET Score = ? WHERE userno = ?', [b.score, b.userno], function (err, rows, fields) {
+        res.send("업데이트");
+      })
+    }
+    else{
+      conn.query('INSERT INTO RaidScore (userno, Name, Score) values(?, ?, ?)', [b.userno, b.name, b.score], function (err, rows, fields){
+        res.send("인설트");
+    })
+    }
+  })
+});
+
+app.post("/GetMyRaidScore", function (req, res) {
+  var b = req.body;
+
+  conn.query('select Ranking, Name, Score from RaidScore where userno = ?;', [b.userno], function (err, rows, fields) {
+    if(rows.length > 0 ){
+      var person = {}; //또는 var person = new Object();
+      person.info = rows;
+      res.json(rows[0]);
+
+    }
+    else{
+
+      res.send("101");
+    }
+  })
+});
+
+app.post("/GetAllRaidScore", function (req, res) {
+  var b = req.body;
+
+  conn.query('select * from RaidScore;', function (err, rows, fields) {
+
+    if(rows.length > 0 ){
+      var person = {}; //또는 var person = new Object();
+      person.info = rows;
+      res.json(person);
+
+    }
+    else{
+      res.send("101");
+    }
+  })
+});
 
 app.post("/GetCardData", function (req, res) {
   conn.query('SELECT * FROM carddata where userno = ' + req.body.userno, function (err, rows, fields) {
@@ -199,9 +259,16 @@ app.post("/dia_send", function (req, res) {
 //---------------------------------유저 업데이트
 app.post("/UpdateUesrData", function (req, res) {
   var b = req.body;
-  conn.query('UPDATE player SET m_nGold = ?, m_nDiamond = ?, m_nGas = ?, _bFirst = 0 WHERE userno = ?', [b.gold, b.dia, b.gas, b.userno], function (err, rows, fields) {
+  var bo;
+if(b.first == "true"){
+  bo = 1;
+}else{
+  bo = 0;
+}
+  conn.query('UPDATE player SET m_nGold = ?, m_nDiamond = ?, m_nGas = ?, _bFirst = ? WHERE userno = ?', [b.gold, b.dia, b.gas, bo, b.userno], function (err, rows, fields) {
     if(err) console.log()
     console.log(rows[0]);
+    res.send(rows[0]);
   })
 });
 
