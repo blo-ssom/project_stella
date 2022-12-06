@@ -193,7 +193,7 @@ app.post("/GetMyRaidScore", function (req, res) {
 app.post("/GetAllRaidScore", function (req, res) {
   var b = req.body;
 
-  conn.query('select * from RaidScore;', function (err, rows, fields) {
+  conn.query('select * from `stella`.`RaidScore` order by Score desc;', function (err, rows, fields) {
 
     if(rows.length > 0 ){
       var person = {}; //또는 var person = new Object();
